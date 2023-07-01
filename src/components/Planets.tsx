@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { TextureLoader } from "three";
 import React, { useRef, useState, useMemo } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
 import { MoonProps } from "./Moon";
@@ -8,7 +9,11 @@ interface PlanetProps {
   distance: number;
   y: number;
   z: number;
-  speed: number;
+  orbitalSpeed: number;
+  axialTilt: number;
+  axialSpeed: number;
+  name: string;
+  color: string;
   children: React.ReactNode;
 }
 
@@ -17,23 +22,29 @@ const Planets: React.FC<PlanetProps> = ({
   distance,
   y,
   z,
-  speed,
+  orbitalSpeed,
+  axialTilt,
+  axialSpeed,
+  name,
+  color,
   children,
 }) => {
   const mesh = useRef<THREE.Mesh>(null!);
   const [hovered, setHover] = useState(false);
   const [active, setActive] = useState(false);
+  const texture = useLoader(
+    TextureLoader,
+    "./texture/rock_surface_diff_2k.jpg"
+  );
 
   useFrame((state, delta) => {
     if (mesh.current) {
-      // rotation orbitale
-      mesh.current.rotation.x += delta;
+      mesh.current.rotation.x = axialTilt * (Math.PI / 180);
+      mesh.current.rotation.y += axialSpeed / 10;
       const time = state.clock.getElapsedTime();
-      const angle = time * speed;
-      // Calculez les coordonnées x et z pour une orbite circulaire
+      const angle = (time * orbitalSpeed) / 5;
       const x = distance * Math.cos(angle);
       const z = distance * Math.sin(angle);
-      // Mettre à jour la position de la planète
       mesh.current.position.set(x, 0, z);
     }
   });
@@ -55,10 +66,9 @@ const Planets: React.FC<PlanetProps> = ({
 
   return (
     <>
-      {/* Trajectoire orbitale */}
       <lineLoop>
         <bufferGeometry attach="geometry" {...orbitGeometry} />
-        <lineBasicMaterial attach="material" color="grey" />
+        <lineBasicMaterial attach="material" color="rgb(50, 50, 50)" />
       </lineLoop>
       <mesh
         ref={mesh}
@@ -68,8 +78,14 @@ const Planets: React.FC<PlanetProps> = ({
         onPointerOver={() => setHover(true)}
         onPointerOut={() => setHover(false)}
       >
-        <sphereGeometry args={[size, 64, 64]} />
-        <meshStandardMaterial color={hovered ? "orange" : "brown"} />
+        <sphereGeometry args={[size, 32, 32]} />
+        <meshStandardMaterial
+          metalness={0.5}
+          roughness={0.58}
+          map={texture}
+          color={hovered ? "white" : color}
+        />
+        <axesHelper args={[size + 10]} />
       </mesh>
       {React.Children.map(children, (child) => {
         if (React.isValidElement<MoonProps>(child)) {

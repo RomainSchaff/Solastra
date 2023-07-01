@@ -1,10 +1,10 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import { folder, useControls } from "leva";
-import { extend, useFrame, useThree } from "@react-three/fiber";
+import { extend, useFrame, useLoader, useThree } from "@react-three/fiber";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
-import { Vector2 } from "three";
+import { TextureLoader, Vector2 } from "three";
 
 // Ensure EffectComposer, RenderPass, UnrealBloomPass are available within r3f
 extend({ EffectComposer, RenderPass, UnrealBloomPass });
@@ -24,7 +24,7 @@ const Effects: React.FC = () => {
       0.85
     );
     bloomPass.current.threshold = 0;
-    bloomPass.current.strength = 2;
+    bloomPass.current.strength = 0.7;
     bloomPass.current.radius = 0;
 
     composer.current = new EffectComposer(gl);
@@ -47,63 +47,81 @@ const Effects: React.FC = () => {
   return null;
 };
 
-function ControlBox() {
-  const { scale, widthSegments, heightSegments, color, wireframe } =
-    useControls("Box", {
-      transform: folder({
-        scale: {
-          value: 50,
-          min: 10,
-          max: 100,
-          step: 2,
-        },
-        widthSegments: {
-          value: 64,
-          min: 3,
-          max: 64,
-          step: 1,
-        },
-        heightSegments: {
-          value: 32,
-          min: 2,
-          max: 32,
-          step: 1,
-        },
-      }),
-      material: folder({
-        color: "#FDB813",
-        wireframe: false,
-      }),
-    });
+// function ControlBox() {
+//   // Load the texture
+//   const texture = useLoader(TextureLoader, "./texture/2k_sun.jpg");
 
-  return (
-    <>
-      <sphereGeometry args={[scale, widthSegments, heightSegments]} />
-      <meshStandardMaterial color={color} wireframe={wireframe} />
-    </>
-  );
-}
+//   const { scale, widthSegments, heightSegments, color, wireframe } =
+//     useControls("Box", {
+//       transform: folder({
+//         scale: {
+//           value: 50,
+//           min: 10,
+//           max: 100,
+//           step: 2,
+//         },
+//         widthSegments: {
+//           value: 32,
+//           min: 3,
+//           max: 64,
+//           step: 1,
+//         },
+//         heightSegments: {
+//           value: 16,
+//           min: 2,
+//           max: 32,
+//           step: 1,
+//         },
+//       }),
+//       material: folder({
+//         color: "#ff7c00",
+//         wireframe: true,
+//       }),
+//     });
+
+//   return (
+//     <>
+//       <sphereGeometry args={[scale, widthSegments, heightSegments]} />
+//       <meshBasicMaterial
+//         color={hovered ? color : "white"}
+//         wireframe={wireframe}
+//         map={texture}
+//       />
+//     </>
+//   );
+// }
 
 const Sun: React.FC = () => {
   const meshRef = useRef<THREE.Mesh>(null);
   const lightRef = useRef<THREE.PointLight>(null);
   const [hovered, setHover] = useState(false);
+  const texture = useLoader(TextureLoader, "./texture/2k_sun.jpg");
+
+  useFrame((state, delta) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.y += 0.001; // Changez cette valeur pour ajuster la vitesse de rotation
+    }
+  });
 
   return (
-    <mesh
-      ref={meshRef}
-      position={[0, 0, 0]}
-      onPointerOver={() => setHover(true)}
-      onPointerOut={() => setHover(false)}
-    >
-      <pointLight
-        ref={lightRef}
+    <>
+      <Effects />
+      <mesh
+        ref={meshRef}
         position={[0, 0, 0]}
-        color="yellow"
-        intensity={8}
-      />
-      <ControlBox />
-    </mesh>
+        onPointerOver={() => setHover(true)}
+        onPointerOut={() => setHover(false)}
+      >
+        <pointLight
+          ref={lightRef}
+          position={[0, 0, 0]}
+          color="white"
+          intensity={3}
+        />
+        <sphereGeometry args={[50, 32, 16]} />
+        <meshBasicMaterial color={hovered ? "white" : "yellow"} map={texture} />
+      </mesh>
+    </>
   );
 };
 

@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { useRef } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useLoader } from "@react-three/fiber";
 
 export interface MoonProps {
   size: number;
@@ -15,6 +15,12 @@ const Moon: React.FC<MoonProps> = ({
   speed,
   planetPosition,
 }) => {
+  // Load the texture
+  const texture = useLoader(
+    THREE.TextureLoader,
+    "./texture/rock_surface_ao_2k.jpg"
+  );
+
   const mesh = useRef<THREE.Mesh>(null!);
 
   useFrame((state, delta) => {
