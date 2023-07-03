@@ -1,13 +1,11 @@
 import * as THREE from "three";
 import { TextureLoader } from "three";
-import React, { useRef, useState, useMemo } from "react";
+import { useRef, useState, useMemo } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
-import { MoonProps } from "./Moon";
 
 function Uranus() {
-  const mesh = useRef<THREE.Mesh>(null!);
-  const ringMesh = useRef<THREE.Mesh>(null!);
-  const [hovered, setHover] = useState(false);
+  const mesh = useRef<THREE.Group>(null!);
+  const ringMesh = useRef<THREE.Group>(null!);
   const [active, setActive] = useState(false);
   const texture = useLoader(TextureLoader, "./texture/2k_uranus.jpg");
 
@@ -15,14 +13,12 @@ function Uranus() {
     if (mesh.current) {
       mesh.current.rotation.x = 98 * (Math.PI / 180);
       mesh.current.rotation.y += 0.12 / 10;
-      ringMesh.current.rotation.x = 188 * (Math.PI / 180);
-      ringMesh.current.rotation.z += 0.12 / 10;
+      ringMesh.current.rotation.x = 90 * (Math.PI / 180);
       const time = state.clock.getElapsedTime();
       const angle = (time * 0.05) / 5;
       const x = 900 * Math.cos(angle);
       const z = 900 * Math.sin(angle);
       mesh.current.position.set(x, 0, z);
-      ringMesh.current.position.set(x, 0, z);
     }
   });
 
@@ -47,32 +43,47 @@ function Uranus() {
         <bufferGeometry attach="geometry" {...orbitGeometry} />
         <lineBasicMaterial attach="material" color="rgb(50, 50, 50)" />
       </lineLoop>
-      <mesh
+      <group
         ref={mesh}
         scale={active ? 1.3 : 1}
         position={[900, 0, 0]}
         onClick={() => setActive(!active)}
-        onPointerOver={() => setHover(true)}
-        onPointerOut={() => setHover(false)}
       >
-        <sphereGeometry args={[20, 32, 32]} />
-        <meshStandardMaterial
-          metalness={0.5}
-          roughness={0.58}
-          map={texture}
-          color="gray"
-        />
-        <axesHelper args={[20 + 10]} />
-      </mesh>
-      <mesh ref={ringMesh} position={[700, 0, 0]}>
-        <ringGeometry args={[25, 35, 30]} />
-        <meshStandardMaterial
-          color="grey"
-          side={THREE.DoubleSide}
-          transparent
-          opacity={0.8}
-        />
-      </mesh>
+        <mesh>
+          <sphereGeometry args={[20, 32, 32]} />
+          <meshStandardMaterial
+            metalness={0.7}
+            roughness={1}
+            map={texture}
+            color={active ? "rgb(165, 165, 165)" : "gray"}
+          />
+          <axesHelper args={[20 + 10]} />
+        </mesh>
+        <group ref={ringMesh}>
+          <mesh>
+            <ringGeometry args={[30, 31, 30]} />
+            <meshStandardMaterial
+              metalness={0.2}
+              roughness={1}
+              color="rgb(50, 50, 50)"
+              side={THREE.DoubleSide}
+              transparent
+              opacity={0.6}
+            />
+          </mesh>
+          <mesh>
+            <ringGeometry args={[35, 36.5, 30]} />
+            <meshStandardMaterial
+              metalness={0.2}
+              roughness={1}
+              color="rgb(50, 50, 50)"
+              side={THREE.DoubleSide}
+              transparent
+              opacity={0.9}
+            />
+          </mesh>
+        </group>
+      </group>
     </>
   );
 }

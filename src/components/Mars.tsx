@@ -1,11 +1,10 @@
 import * as THREE from "three";
 import { TextureLoader } from "three";
-import React, { useRef, useState, useMemo } from "react";
+import { useRef, useState, useMemo } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
 
 function Mars() {
   const mesh = useRef<THREE.Mesh>(null!);
-  const [hovered, setHover] = useState(false);
   const [active, setActive] = useState(false);
   const texture = useLoader(TextureLoader, "./texture/2k_mars.jpg");
 
@@ -47,15 +46,13 @@ function Mars() {
         scale={active ? 1.3 : 1}
         position={[300, 0, 0]}
         onClick={() => setActive(!active)}
-        onPointerOver={() => setHover(true)}
-        onPointerOut={() => setHover(false)}
       >
         <sphereGeometry args={[7, 32, 32]} />
         <meshStandardMaterial
           metalness={0.3}
           roughness={1}
           map={texture}
-          color="gray"
+          color={active ? "rgb(165, 165, 165)" : "gray"}
         />
         <axesHelper args={[7 + 10]} />
       </mesh>

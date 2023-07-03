@@ -1,12 +1,10 @@
 import * as THREE from "three";
 import { TextureLoader } from "three";
-import React, { useRef, useState, useMemo } from "react";
+import { useRef, useState, useMemo } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
-// import { MoonProps } from "./Moon";
 
 function Mercury() {
   const mesh = useRef<THREE.Mesh>(null!);
-  const [hovered, setHover] = useState(false);
   const [active, setActive] = useState(false);
   const texture = useLoader(TextureLoader, "./texture/2k_mercury.jpg");
 
@@ -48,15 +46,13 @@ function Mercury() {
         scale={active ? 1.3 : 1}
         position={[100, 0, 0]}
         onClick={() => setActive(!active)}
-        onPointerOver={() => setHover(true)}
-        onPointerOut={() => setHover(false)}
       >
-        <sphereGeometry args={[6, 32, 32]} />
+        <sphereGeometry args={[6, 16, 16]} />
         <meshStandardMaterial
           metalness={0.2}
           roughness={1}
           map={texture}
-          color="gray"
+          color={active ? "rgb(165, 165, 165)" : "gray"}
         />
         <axesHelper args={[6 + 10]} />
       </mesh>

@@ -1,12 +1,10 @@
 import * as THREE from "three";
 import { TextureLoader } from "three";
-import React, { useRef, useState, useMemo } from "react";
+import { useRef, useState, useMemo } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
-import { MoonProps } from "./Moon";
 
 function Jupiter() {
   const mesh = useRef<THREE.Mesh>(null!);
-  const [hovered, setHover] = useState(false);
   const [active, setActive] = useState(false);
   const texture = useLoader(TextureLoader, "./texture/2k_jupiter.jpg");
 
@@ -48,15 +46,13 @@ function Jupiter() {
         scale={active ? 1.3 : 1}
         position={[-500, 0, 0]}
         onClick={() => setActive(!active)}
-        onPointerOver={() => setHover(true)}
-        onPointerOut={() => setHover(false)}
       >
         <sphereGeometry args={[29, 32, 32]} />
         <meshStandardMaterial
           metalness={0.65}
           roughness={1}
           map={texture}
-          color="gray"
+          color={active ? "rgb(135, 135, 135)" : "gray"}
         />
         <axesHelper args={[29 + 10]} />
       </mesh>
