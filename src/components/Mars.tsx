@@ -1,11 +1,20 @@
 import * as THREE from "three";
 import { TextureLoader } from "three";
-import { useRef, useState, useMemo } from "react";
+import { useRef } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
 
-function Mars() {
+type MarsProps = {
+  setNewTarget: (value: [number, number, number]) => void;
+  planetActive: number;
+  setPlanetActive: (value: number) => void;
+};
+
+const Mars: React.FC<MarsProps> = ({
+  setNewTarget,
+  planetActive,
+  setPlanetActive,
+}) => {
   const mesh = useRef<THREE.Mesh>(null!);
-  const [active, setActive] = useState(false);
   const texture = useLoader(TextureLoader, "./texture/2k_mars.jpg");
 
   useFrame((state, delta) => {
@@ -17,47 +26,41 @@ function Mars() {
       const x = 300 * Math.cos(angle);
       const z = 300 * Math.sin(angle);
       mesh.current.position.set(x, 0, z);
+      if (planetActive === 4) {
+        setNewTarget([x, 0, z]);
+      } else if (planetActive === 0) {
+        setNewTarget([0, 0, 0]);
+      }
     }
   });
 
-  // Géométrie pour la trajectoire orbitale
-  const orbitGeometry = useMemo(() => {
-    const geometry = new THREE.BufferGeometry();
-    const vertices = [];
-    for (let i = 0; i <= 64; i++) {
-      const theta = (i / 64) * Math.PI * 2;
-      vertices.push(300 * Math.cos(theta), 0, 300 * Math.sin(theta));
+  function handleClick() {
+    if (planetActive !== 4) {
+      setPlanetActive(4);
+    } else if (planetActive === 4) {
+      setPlanetActive(0);
     }
-    geometry.setAttribute(
-      "position",
-      new THREE.Float32BufferAttribute(vertices, 3)
-    );
-    return geometry;
-  }, []);
+  }
 
   return (
     <>
-      <lineLoop>
-        <bufferGeometry attach="geometry" {...orbitGeometry} />
-        <lineBasicMaterial attach="material" color="rgb(50, 50, 50)" />
-      </lineLoop>
       <mesh
         ref={mesh}
-        scale={active ? 1.3 : 1}
+        scale={planetActive === 4 ? 1.3 : 1}
         position={[300, 0, 0]}
-        onClick={() => setActive(!active)}
+        onClick={handleClick}
       >
         <sphereGeometry args={[7, 32, 32]} />
         <meshStandardMaterial
           metalness={0.3}
           roughness={1}
           map={texture}
-          color={active ? "rgb(165, 165, 165)" : "gray"}
+          color={planetActive === 4 ? "rgb(165, 165, 165)" : "gray"}
         />
         <axesHelper args={[7 + 10]} />
       </mesh>
     </>
   );
-}
+};
 
 export default Mars;

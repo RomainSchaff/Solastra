@@ -1,5 +1,5 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
-import { folder, useControls } from "leva";
+// import { folder, useControls } from "leva";
 import { extend, useFrame, useLoader, useThree } from "@react-three/fiber";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
@@ -116,9 +116,9 @@ const Sun: React.FC = () => {
           ref={lightRef}
           position={[0, 0, 0]}
           color="white"
-          intensity={3}
+          intensity={2.8}
         />
-        <sphereGeometry args={[50, 32, 16]} />
+        <sphereGeometry args={[20, 32, 16]} />
         <meshBasicMaterial color={hovered ? "white" : "yellow"} map={texture} />
       </mesh>
     </>

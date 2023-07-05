@@ -1,11 +1,20 @@
 import * as THREE from "three";
 import { TextureLoader } from "three";
-import { useRef, useState, useMemo } from "react";
+import { useRef } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
 
-function Mercury() {
+type MercuryProps = {
+  setNewTarget: (value: [number, number, number]) => void;
+  planetActive: number;
+  setPlanetActive: (value: number) => void;
+};
+
+const Mercury: React.FC<MercuryProps> = ({
+  setNewTarget,
+  planetActive,
+  setPlanetActive,
+}) => {
   const mesh = useRef<THREE.Mesh>(null!);
-  const [active, setActive] = useState(false);
   const texture = useLoader(TextureLoader, "./texture/2k_mercury.jpg");
 
   useFrame((state, delta) => {
@@ -17,47 +26,41 @@ function Mercury() {
       const x = 100 * Math.cos(angle);
       const z = 100 * Math.sin(angle);
       mesh.current.position.set(x, 0, z);
+      if (planetActive === 1) {
+        setNewTarget([x, 0, z]);
+      } else if (planetActive === 0) {
+        setNewTarget([0, 0, 0]);
+      }
     }
   });
 
-  // Géométrie pour la trajectoire orbitale
-  const orbitGeometry = useMemo(() => {
-    const geometry = new THREE.BufferGeometry();
-    const vertices = [];
-    for (let i = 0; i <= 64; i++) {
-      const theta = (i / 64) * Math.PI * 2;
-      vertices.push(100 * Math.cos(theta), 0, 100 * Math.sin(theta));
+  function handleClick() {
+    if (planetActive !== 1) {
+      setPlanetActive(1);
+    } else if (planetActive === 1) {
+      setPlanetActive(0);
     }
-    geometry.setAttribute(
-      "position",
-      new THREE.Float32BufferAttribute(vertices, 3)
-    );
-    return geometry;
-  }, []);
+  }
 
   return (
     <>
-      <lineLoop>
-        <bufferGeometry attach="geometry" {...orbitGeometry} />
-        <lineBasicMaterial attach="material" color="rgb(50, 50, 50)" />
-      </lineLoop>
       <mesh
         ref={mesh}
-        scale={active ? 1.3 : 1}
+        scale={planetActive === 1 ? 1.3 : 1}
         position={[100, 0, 0]}
-        onClick={() => setActive(!active)}
+        onClick={handleClick}
       >
         <sphereGeometry args={[6, 16, 16]} />
         <meshStandardMaterial
           metalness={0.2}
           roughness={1}
           map={texture}
-          color={active ? "rgb(165, 165, 165)" : "gray"}
+          color={planetActive === 1 ? "rgb(165, 165, 165)" : "gray"}
         />
         <axesHelper args={[6 + 10]} />
       </mesh>
     </>
   );
-}
+};
 
 export default Mercury;
