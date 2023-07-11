@@ -19,20 +19,16 @@ const Neptune: React.FC<NeptuneProps> = ({
   const texture = useLoader(TextureLoader, "./texture/2k_neptune.jpg");
 
   useFrame((state, delta) => {
-    if (mesh.current) {
-      mesh.current.rotation.x = 28 * (Math.PI / 180);
-      mesh.current.rotation.y += 0.12 / 10;
-      ringMesh.current.rotation.x = 90 * (Math.PI / 180);
-      const time = state.clock.getElapsedTime();
-      const angle = (time * 0.03) / 5;
-      const x = 1200 * Math.cos(angle);
-      const z = 1200 * Math.sin(angle);
-      mesh.current.position.set(x, 0, z);
-      if (planetActive === 8) {
-        setNewTarget([x, 0, z]);
-      } else if (planetActive === 0) {
-        setNewTarget([0, 0, 0]);
-      }
+    mesh.current.rotation.y += delta * 1.2;
+    const time = state.clock.getElapsedTime();
+    const angle = (time * 0.03) / 5;
+    const x = 1200 * Math.cos(angle);
+    const z = 1200 * Math.sin(angle);
+    mesh.current.position.set(x, 0, z);
+    if (planetActive === 8) {
+      setNewTarget([x, 0, z]);
+    } else if (planetActive === 0) {
+      setNewTarget([0, 0, 0]);
     }
   });
 
@@ -70,6 +66,7 @@ const Neptune: React.FC<NeptuneProps> = ({
         scale={planetActive === 8 ? 1.3 : 1}
         position={[-1200, 0, 0]}
         onClick={handleClick}
+        rotation-x={28 * (Math.PI / 180)}
       >
         <mesh>
           <sphereGeometry args={[19, 32, 32]} />
@@ -79,7 +76,7 @@ const Neptune: React.FC<NeptuneProps> = ({
           />
           <axesHelper args={[19 + 10]} />
         </mesh>
-        <group ref={ringMesh}>
+        <group ref={ringMesh} rotation-x={90 * (Math.PI / 180)}>
           <mesh>
             <ringGeometry args={[30, 31, 30]} />
             <meshStandardMaterial

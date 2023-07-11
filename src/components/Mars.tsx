@@ -18,19 +18,16 @@ const Mars: React.FC<MarsProps> = ({
   const texture = useLoader(TextureLoader, "./texture/2k_mars.jpg");
 
   useFrame((state, delta) => {
-    if (mesh.current) {
-      mesh.current.rotation.x = 25 * (Math.PI / 180);
-      mesh.current.rotation.y += 0.1 / 10;
-      const time = state.clock.getElapsedTime();
-      const angle = (time * 0.3) / 5;
-      const x = 300 * Math.cos(angle);
-      const z = 300 * Math.sin(angle);
-      mesh.current.position.set(x, 0, z);
-      if (planetActive === 4) {
-        setNewTarget([x, 0, z]);
-      } else if (planetActive === 0) {
-        setNewTarget([0, 0, 0]);
-      }
+    mesh.current.rotation.y += delta;
+    const time = state.clock.getElapsedTime();
+    const angle = (time * 0.3) / 5;
+    const x = 300 * Math.cos(angle);
+    const z = 300 * Math.sin(angle);
+    mesh.current.position.set(x, 0, z);
+    if (planetActive === 4) {
+      setNewTarget([x, 0, z]);
+    } else if (planetActive === 0) {
+      setNewTarget([0, 0, 0]);
     }
   });
 
@@ -49,6 +46,7 @@ const Mars: React.FC<MarsProps> = ({
         scale={planetActive === 4 ? 1.3 : 1}
         position={[300, 0, 0]}
         onClick={handleClick}
+        rotation-x={25 * (Math.PI / 180)}
       >
         <sphereGeometry args={[7, 32, 32]} />
         <meshStandardMaterial

@@ -18,19 +18,16 @@ const Jupiter: React.FC<JupiterProps> = ({
   const texture = useLoader(TextureLoader, "./texture/2k_jupiter.jpg");
 
   useFrame((state, delta) => {
-    if (mesh.current) {
-      mesh.current.rotation.x = 3 * (Math.PI / 180);
-      mesh.current.rotation.y += 0.22 / 10;
-      const time = state.clock.getElapsedTime();
-      const angle = (time * 0.2) / 5;
-      const x = 500 * Math.cos(angle);
-      const z = 500 * Math.sin(angle);
-      mesh.current.position.set(x, 0, z);
-      if (planetActive === 5) {
-        setNewTarget([x, 0, z]);
-      } else if (planetActive === 0) {
-        setNewTarget([0, 0, 0]);
-      }
+    mesh.current.rotation.y += delta * 2.2;
+    const time = state.clock.getElapsedTime();
+    const angle = (time * 0.2) / 5;
+    const x = 500 * Math.cos(angle);
+    const z = 500 * Math.sin(angle);
+    mesh.current.position.set(x, 0, z);
+    if (planetActive === 5) {
+      setNewTarget([x, 0, z]);
+    } else if (planetActive === 0) {
+      setNewTarget([0, 0, 0]);
     }
   });
 
@@ -49,6 +46,7 @@ const Jupiter: React.FC<JupiterProps> = ({
         scale={planetActive === 5 ? 1.3 : 1}
         position={[-500, 0, 0]}
         onClick={handleClick}
+        rotation-x={3 * (Math.PI / 180)}
       >
         <sphereGeometry args={[29, 32, 32]} />
         <meshStandardMaterial

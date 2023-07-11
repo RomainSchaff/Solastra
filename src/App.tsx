@@ -8,7 +8,11 @@ function App() {
 
   return (
     <div id="scene">
-      <Canvas>
+      <Canvas
+        onDoubleClick={(e) => {
+          console.log("Double Clicked!");
+        }}
+      >
         <ambientLight args={[0xffffff, 0.2]} />
         <Scene />
         <mesh>

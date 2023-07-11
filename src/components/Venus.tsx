@@ -19,19 +19,16 @@ const Venus: React.FC<VenusProps> = ({
   const atmosphere = useLoader(TextureLoader, "./texture/2k_venus_surface.jpg");
 
   useFrame((state, delta) => {
-    if (mesh.current) {
-      mesh.current.rotation.x = 177 * (Math.PI / 180);
-      mesh.current.rotation.y += 0.001 / 10;
-      const time = state.clock.getElapsedTime();
-      const angle = (time * 1.5) / 5;
-      const x = 150 * Math.cos(angle);
-      const z = 150 * Math.sin(angle);
-      mesh.current.position.set(x, 0, z);
-      if (planetActive === 2) {
-        setNewTarget([x, 0, z]);
-      } else if (planetActive === 0) {
-        setNewTarget([0, 0, 0]);
-      }
+    mesh.current.rotation.y += delta / 100;
+    const time = state.clock.getElapsedTime();
+    const angle = (time * 1.2) / 5;
+    const x = 150 * Math.cos(angle);
+    const z = 150 * Math.sin(angle);
+    mesh.current.position.set(x, 0, z);
+    if (planetActive === 2) {
+      setNewTarget([x, 0, z]);
+    } else if (planetActive === 0) {
+      setNewTarget([0, 0, 0]);
     }
   });
 
@@ -50,6 +47,7 @@ const Venus: React.FC<VenusProps> = ({
         scale={planetActive === 2 ? 1.3 : 1}
         position={[150, 0, 0]}
         onClick={handleClick}
+        rotation-x={177 * (Math.PI / 180)}
       >
         <mesh>
           <sphereGeometry args={[8, 16, 16]} />

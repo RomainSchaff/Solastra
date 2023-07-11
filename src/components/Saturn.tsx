@@ -19,20 +19,16 @@ const Saturn: React.FC<SaturnProps> = ({
   const texture = useLoader(TextureLoader, "./texture/2k_saturn.jpg");
 
   useFrame((state, delta) => {
-    if (mesh.current) {
-      mesh.current.rotation.x = 27 * (Math.PI / 180);
-      mesh.current.rotation.y += 0.2 / 10;
-      ringMesh.current.rotation.x = 90 * (Math.PI / 180);
-      const time = state.clock.getElapsedTime();
-      const angle = (time * 0.1) / 5;
-      const x = 700 * Math.cos(angle);
-      const z = 700 * Math.sin(angle);
-      mesh.current.position.set(x, 0, z);
-      if (planetActive === 6) {
-        setNewTarget([x, 0, z]);
-      } else if (planetActive === 0) {
-        setNewTarget([0, 0, 0]);
-      }
+    mesh.current.rotation.y += delta * 2;
+    const time = state.clock.getElapsedTime();
+    const angle = (time * 0.1) / 5;
+    const x = 700 * Math.cos(angle);
+    const z = 700 * Math.sin(angle);
+    mesh.current.position.set(x, 0, z);
+    if (planetActive === 6) {
+      setNewTarget([x, 0, z]);
+    } else if (planetActive === 0) {
+      setNewTarget([0, 0, 0]);
     }
   });
 
@@ -51,6 +47,7 @@ const Saturn: React.FC<SaturnProps> = ({
         position={[700, 0, 0]}
         scale={planetActive === 6 ? 1.3 : 1}
         onClick={handleClick}
+        rotation-x={27 * (Math.PI / 180)}
       >
         <mesh>
           <sphereGeometry args={[25, 32, 32]} />
@@ -62,7 +59,7 @@ const Saturn: React.FC<SaturnProps> = ({
           />
           <axesHelper args={[25 + 10]} />
         </mesh>
-        <group ref={ringMesh}>
+        <group ref={ringMesh} rotation-x={90 * (Math.PI / 180)}>
           <mesh>
             <ringGeometry args={[30.5, 36, 30]} />
             <meshStandardMaterial

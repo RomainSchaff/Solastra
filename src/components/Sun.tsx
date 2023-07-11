@@ -25,7 +25,7 @@ const Effects: React.FC = () => {
     );
     bloomPass.current.threshold = 0;
     bloomPass.current.strength = 0.7;
-    bloomPass.current.radius = 0;
+    bloomPass.current.radius = 1;
 
     composer.current = new EffectComposer(gl);
     composer.current.addPass(renderScene);
@@ -106,20 +106,24 @@ const Sun: React.FC = () => {
   return (
     <>
       <Effects />
+      <pointLight
+        ref={lightRef}
+        position={[0, 0, 0]}
+        color="white"
+        intensity={2.8}
+      />
       <mesh
         ref={meshRef}
         position={[0, 0, 0]}
         onPointerOver={() => setHover(true)}
         onPointerOut={() => setHover(false)}
       >
-        <pointLight
-          ref={lightRef}
-          position={[0, 0, 0]}
-          color="white"
-          intensity={2.8}
+        <sphereGeometry args={[30, 32, 16]} />
+        <meshBasicMaterial
+          color={hovered ? "white" : "yellow"}
+          map={texture}
+          wireframe
         />
-        <sphereGeometry args={[20, 32, 16]} />
-        <meshBasicMaterial color={hovered ? "white" : "yellow"} map={texture} />
       </mesh>
     </>
   );

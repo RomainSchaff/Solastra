@@ -18,19 +18,19 @@ const Mercury: React.FC<MercuryProps> = ({
   const texture = useLoader(TextureLoader, "./texture/2k_mercury.jpg");
 
   useFrame((state, delta) => {
-    if (mesh.current) {
-      mesh.current.rotation.x = 0.03 * (Math.PI / 180);
-      mesh.current.rotation.y += 0.01 / 10;
-      const time = state.clock.getElapsedTime();
-      const angle = (time * 2) / 5;
-      const x = 100 * Math.cos(angle);
-      const z = 100 * Math.sin(angle);
-      mesh.current.position.set(x, 0, z);
-      if (planetActive === 1) {
-        setNewTarget([x, 0, z]);
-      } else if (planetActive === 0) {
-        setNewTarget([0, 0, 0]);
-      }
+    mesh.current.rotation.y += delta / 10;
+    const time = state.clock.getElapsedTime();
+    const angle = (time * 1.5) / 5;
+    const x = 100 * Math.cos(angle);
+    const z = 100 * Math.sin(angle);
+    // mesh.current.position.set(x, 0, z);
+    // const x = 100 * Math.cos(delta);
+    // const z = 100 * Math.sin(delta);
+    mesh.current.position.set(x, 0, z);
+    if (planetActive === 1) {
+      setNewTarget([x, 0, z]);
+    } else if (planetActive === 0) {
+      setNewTarget([0, 0, 0]);
     }
   });
 
@@ -49,6 +49,7 @@ const Mercury: React.FC<MercuryProps> = ({
         scale={planetActive === 1 ? 1.3 : 1}
         position={[100, 0, 0]}
         onClick={handleClick}
+        rotation-x={0.03 * (Math.PI / 180)}
       >
         <sphereGeometry args={[6, 16, 16]} />
         <meshStandardMaterial
