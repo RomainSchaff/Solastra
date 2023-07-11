@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/Solastra/static/css/main.d5b3b52d.css",
+    "main.js": "/Solastra/static/js/main.3556f913.js",
+    "index.html": "/Solastra/index.html",
+    "main.d5b3b52d.css.map": "/Solastra/static/css/main.d5b3b52d.css.map",
+    "main.3556f913.js.map": "/Solastra/static/js/main.3556f913.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.d5b3b52d.css",
+    "static/js/main.3556f913.js"
+  ]
+}
