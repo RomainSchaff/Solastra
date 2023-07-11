@@ -108,6 +108,7 @@ const Sun: React.FC = () => {
       <Effects />
       <pointLight
         ref={lightRef}
+        castShadow
         position={[0, 0, 0]}
         color="white"
         intensity={2.8}

@@ -29,14 +29,17 @@ const Earth: React.FC<EarthProps> = ({
     const z = 200 * Math.sin(angle);
     mesh.current.position.set(x, 0, z);
     // Moon rotation
-    const moonAngle = time / 10;
+    const moonAngle = time / 1;
     const moonX = 30 * Math.cos(moonAngle);
-    const moonY = 30 * Math.sin(moonAngle);
-    const moonZ = 30 * Math.cos(moonAngle);
+    const moonY = 10 * Math.sin(moonAngle);
+    const moonZ = 30 * Math.sin(moonAngle);
     moonMesh.current.position.set(moonX, moonY, moonZ);
     if (planetActive === 3) {
       setNewTarget([x, 0, z]);
-    } else if (planetActive === 0) {
+    }
+    // if (planetActive !== 3) {
+    //   mesh.current.position.set(x, 0, z);
+    if (planetActive === 0) {
       setNewTarget([0, 0, 0]);
     }
   });
@@ -51,13 +54,18 @@ const Earth: React.FC<EarthProps> = ({
 
   return (
     <>
-      <group ref={mesh} position={[-200, 0, 0]} onClick={handleClick}>
+      <group
+        ref={mesh}
+        position={[-200, 0, 0]}
+        rotation-x={23 * (Math.PI / 180)}
+        onClick={handleClick}
+      >
         <group
           ref={earthMesh}
           scale={planetActive === 3 ? 1.3 : 1}
-          rotation-x={23 * (Math.PI / 180)}
+          receiveShadow
         >
-          <mesh>
+          <mesh receiveShadow>
             <sphereGeometry args={[11, 32, 32]} />
             <meshStandardMaterial
               metalness={0.2}
@@ -67,7 +75,7 @@ const Earth: React.FC<EarthProps> = ({
             />
             <axesHelper args={[11 + 10]} />
           </mesh>
-          <mesh>
+          <mesh receiveShadow>
             <sphereGeometry args={[12, 32, 32]} />
             <meshStandardMaterial
               map={atmosphere}
@@ -78,7 +86,7 @@ const Earth: React.FC<EarthProps> = ({
             />
           </mesh>
         </group>
-        <mesh ref={moonMesh}>
+        <mesh ref={moonMesh} castShadow>
           <sphereGeometry args={[3, 16, 16]} />
           <meshStandardMaterial
             metalness={0.2}

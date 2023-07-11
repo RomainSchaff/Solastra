@@ -8,7 +8,11 @@ import Saturn from "./components/Saturn";
 import Uranus from "./components/Uranus";
 import Neptune from "./components/Neptune";
 import { useState, useRef } from "react";
-import { PerspectiveCamera, OrbitControls } from "@react-three/drei";
+import {
+  SoftShadows,
+  PerspectiveCamera,
+  OrbitControls,
+} from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
@@ -23,7 +27,7 @@ function Scene() {
   const cameraDistance = 100;
 
   useFrame((state, delta) => {
-    const t = 0.003;
+    const t = 0.005;
     const x = (1 - t) * target[0] + t * newTarget[0];
     const y = (1 - t) * target[1] + t * newTarget[1];
     const z = (1 - t) * target[2] + t * newTarget[2];
@@ -96,14 +100,17 @@ function Scene() {
         far={100000}
       />
       <axesHelper args={[55]} />
+      <SoftShadows size={50} samples={17} />
       <OrbitControls
+        enabled={true}
+        enableRotate={true}
         rotateSpeed={0.4}
         zoomSpeed={0.5}
         minDistance={50}
         maxDistance={2500}
         enablePan={false}
         enableZoom={true}
-        // target={target}
+        target={target}
         // onStart={() => console.log("Oui")}
         // onEnd={() => console.log("Non")}
         onChange={() => console.log("Moving")}

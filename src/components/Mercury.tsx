@@ -23,9 +23,6 @@ const Mercury: React.FC<MercuryProps> = ({
     const angle = (time * 1.5) / 5;
     const x = 100 * Math.cos(angle);
     const z = 100 * Math.sin(angle);
-    // mesh.current.position.set(x, 0, z);
-    // const x = 100 * Math.cos(delta);
-    // const z = 100 * Math.sin(delta);
     mesh.current.position.set(x, 0, z);
     if (planetActive === 1) {
       setNewTarget([x, 0, z]);

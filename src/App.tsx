@@ -9,6 +9,7 @@ function App() {
   return (
     <div id="scene">
       <Canvas
+        shadows
         onDoubleClick={(e) => {
           console.log("Double Clicked!");
         }}
