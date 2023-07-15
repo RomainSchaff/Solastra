@@ -1,5 +1,5 @@
 # Solastra
 
-Ce projet vous permettra de visualiser le système solaire et de vous balader de planete en planete.
+Explorez notre système solaire en vous baladant de planète en planète.
 
 React App / ThreeJS / R3F / DREI / Typescript
