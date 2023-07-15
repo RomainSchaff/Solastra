@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import { TextureLoader } from "three";
 import { useRef } from "react";
-import { useFrame, useLoader } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
+import { useGLTF } from "@react-three/drei";
 
 type SaturnProps = {
   setNewTarget: (value: [number, number, number]) => void;
@@ -15,8 +15,7 @@ const Saturn: React.FC<SaturnProps> = ({
   setPlanetActive,
 }) => {
   const mesh = useRef<THREE.Group>(null!);
-  const ringMesh = useRef<THREE.Group>(null!);
-  const texture = useLoader(TextureLoader, "./texture/2k_saturn.jpg");
+  const model = useGLTF("./Solastra/saturn.glb");
 
   useFrame((state, delta) => {
     mesh.current.rotation.y += delta * 2;
@@ -49,45 +48,7 @@ const Saturn: React.FC<SaturnProps> = ({
         onClick={handleClick}
         rotation-x={27 * (Math.PI / 180)}
       >
-        <mesh>
-          <sphereGeometry args={[25, 32, 32]} />
-          <meshStandardMaterial
-            metalness={0.6}
-            roughness={1}
-            map={texture}
-            color={planetActive === 6 ? "rgb(165, 165, 165)" : "gray"}
-          />
-          <axesHelper args={[25 + 10]} />
-        </mesh>
-        <group ref={ringMesh} rotation-x={90 * (Math.PI / 180)}>
-          <mesh>
-            <ringGeometry args={[30.5, 36, 30]} />
-            <meshStandardMaterial
-              color="rgb(95, 90, 78)"
-              side={THREE.DoubleSide}
-              transparent
-              opacity={0.75}
-            />
-          </mesh>
-          <mesh>
-            <ringGeometry args={[36.6, 50, 30]} />
-            <meshStandardMaterial
-              color="rgb(139, 122, 80)"
-              side={THREE.DoubleSide}
-              transparent
-              opacity={0.9}
-            />
-          </mesh>
-          <mesh>
-            <ringGeometry args={[51.5, 65, 30]} />
-            <meshStandardMaterial
-              color="rgb(139, 122, 80)"
-              side={THREE.DoubleSide}
-              transparent
-              opacity={0.8}
-            />
-          </mesh>
-        </group>
+        <primitive object={model.scene} scale={0.05} />
       </group>
     </>
   );

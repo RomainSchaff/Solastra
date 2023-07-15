@@ -1,8 +1,7 @@
 import * as THREE from "three";
-import { TextureLoader } from "three";
-import { useRef, useState, useMemo } from "react";
-import { useFrame, useLoader } from "@react-three/fiber";
-
+import { useRef } from "react";
+import { useFrame } from "@react-three/fiber";
+import { useTexture } from "@react-three/drei";
 type UranusProps = {
   setNewTarget: (value: [number, number, number]) => void;
   planetActive: number;
@@ -16,7 +15,7 @@ const Uranus: React.FC<UranusProps> = ({
 }) => {
   const mesh = useRef<THREE.Group>(null!);
   const ringMesh = useRef<THREE.Group>(null!);
-  const texture = useLoader(TextureLoader, "./texture/2k_uranus.jpg");
+  const uranus = useTexture("./Solastra/texture/2k_uranus.jpg");
 
   useFrame((state, delta) => {
     mesh.current.rotation.y += delta * 1.2;
@@ -52,34 +51,45 @@ const Uranus: React.FC<UranusProps> = ({
         <mesh>
           <sphereGeometry args={[20, 32, 32]} />
           <meshStandardMaterial
-            metalness={0.7}
+            metalness={0}
             roughness={1}
-            map={texture}
-            color={planetActive === 7 ? "rgb(165, 165, 165)" : "gray"}
+            map={uranus}
+            color="white"
           />
           <axesHelper args={[20 + 10]} />
         </mesh>
         <group ref={ringMesh} rotation-x={90 * (Math.PI / 180)}>
           <mesh>
-            <ringGeometry args={[30, 31, 30]} />
+            <ringGeometry args={[30, 30.2, 60]} />
             <meshStandardMaterial
-              metalness={0.2}
+              metalness={0}
               roughness={1}
-              color="rgb(50, 50, 50)"
+              color="white"
+              side={THREE.DoubleSide}
+              transparent
+              opacity={0.7}
+            />
+          </mesh>
+          <mesh>
+            <ringGeometry args={[30.6, 31.8, 60]} />
+            <meshStandardMaterial
+              metalness={0}
+              roughness={1}
+              color="gray"
               side={THREE.DoubleSide}
               transparent
               opacity={0.6}
             />
           </mesh>
           <mesh>
-            <ringGeometry args={[35, 36.5, 30]} />
+            <ringGeometry args={[31.9, 34, 60]} />
             <meshStandardMaterial
-              metalness={0.2}
+              metalness={0}
               roughness={1}
-              color="rgb(50, 50, 50)"
+              color="white"
               side={THREE.DoubleSide}
               transparent
-              opacity={0.9}
+              opacity={0.7}
             />
           </mesh>
         </group>

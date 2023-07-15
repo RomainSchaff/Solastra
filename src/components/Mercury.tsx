@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import { TextureLoader } from "three";
 import { useRef } from "react";
-import { useFrame, useLoader } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
+import { useGLTF, useTexture } from "@react-three/drei";
 
 type MercuryProps = {
   setNewTarget: (value: [number, number, number]) => void;
@@ -15,7 +15,8 @@ const Mercury: React.FC<MercuryProps> = ({
   setPlanetActive,
 }) => {
   const mesh = useRef<THREE.Mesh>(null!);
-  const texture = useLoader(TextureLoader, "./texture/2k_mercury.jpg");
+  const model = useGLTF("./Solastra/mercury.glb");
+  // const mercury = useTexture("./Solastra/texture/2k_mercury.jpg");
 
   useFrame((state, delta) => {
     mesh.current.rotation.y += delta / 10;
@@ -48,13 +49,14 @@ const Mercury: React.FC<MercuryProps> = ({
         onClick={handleClick}
         rotation-x={0.03 * (Math.PI / 180)}
       >
-        <sphereGeometry args={[6, 16, 16]} />
+        <primitive object={model.scene} scale={0.013} />
+        {/* <sphereGeometry args={[6, 16, 16]} />
         <meshStandardMaterial
           metalness={0.2}
           roughness={1}
-          map={texture}
-          color={planetActive === 1 ? "rgb(165, 165, 165)" : "gray"}
-        />
+          map={mercury}
+          color="white"
+        /> */}
         <axesHelper args={[6 + 10]} />
       </mesh>
     </>

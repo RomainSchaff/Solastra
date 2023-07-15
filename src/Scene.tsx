@@ -7,24 +7,28 @@ import Jupiter from "./components/Jupiter";
 import Saturn from "./components/Saturn";
 import Uranus from "./components/Uranus";
 import Neptune from "./components/Neptune";
-import { useState, useRef } from "react";
+import Asteroids from "./components/Asteroids";
+import { useState } from "react";
 import {
-  SoftShadows,
   PerspectiveCamera,
   OrbitControls,
+  useTexture,
 } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { Perf } from "r3f-perf";
 
 function Scene() {
-  // const orbitRef = useRef<THREE.PerspectiveCamera>(null!);
+  const milkyWayTexture = useTexture(
+    "./Solastra/texture/8k_stars_milky_way.jpg"
+  );
   const [planetActive, setPlanetActive] = useState<number>(0);
   const [target, setTarget] = useState<[number, number, number]>([0, 0, 0]);
   const [newTarget, setNewTarget] = useState<[number, number, number]>([
     0, 0, 0,
   ]);
   const sunPos = new THREE.Vector3(0, 0, 0);
-  const cameraDistance = 100;
+  const cameraDistance = 80;
 
   useFrame((state, delta) => {
     const t = 0.005;
@@ -51,6 +55,7 @@ function Scene() {
 
   return (
     <>
+      <Perf position="bottom-left" />
       <Sun />
       <Mercury
         setNewTarget={setNewTarget}
@@ -72,6 +77,7 @@ function Scene() {
         planetActive={planetActive}
         setPlanetActive={setPlanetActive}
       ></Mars>
+      {/* <Asteroids /> */}
       <Jupiter
         setNewTarget={setNewTarget}
         planetActive={planetActive}
@@ -94,15 +100,14 @@ function Scene() {
       ></Neptune>
       <PerspectiveCamera
         makeDefault
-        position={[0, 100, 700]}
+        position={[-300, 100, 100]}
         aspect={window.innerWidth / window.innerHeight}
         near={0.1}
         far={100000}
       />
       <axesHelper args={[55]} />
-      <SoftShadows size={50} samples={17} />
       <OrbitControls
-        enabled={true}
+        enabled={planetActive === 0}
         enableRotate={true}
         rotateSpeed={0.4}
         zoomSpeed={0.5}
@@ -111,10 +116,11 @@ function Scene() {
         enablePan={false}
         enableZoom={true}
         target={target}
-        // onStart={() => console.log("Oui")}
-        // onEnd={() => console.log("Non")}
-        onChange={() => console.log("Moving")}
       />
+      <mesh>
+        <sphereGeometry args={[5000, 64, 64]} />
+        <meshBasicMaterial map={milkyWayTexture} side={THREE.BackSide} />
+      </mesh>
     </>
   );
 }

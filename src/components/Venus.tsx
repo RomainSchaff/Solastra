@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import { TextureLoader } from "three";
 import { useRef } from "react";
-import { useFrame, useLoader } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
+import { useTexture } from "@react-three/drei";
 
 type VenusProps = {
   setNewTarget: (value: [number, number, number]) => void;
@@ -15,8 +15,11 @@ const Venus: React.FC<VenusProps> = ({
   setPlanetActive,
 }) => {
   const mesh = useRef<THREE.Group>(null!);
-  const texture = useLoader(TextureLoader, "./texture/2k_venus_surface.jpg");
-  const atmosphere = useLoader(TextureLoader, "./texture/2k_venus_surface.jpg");
+
+  const [surface, atmosphere] = useTexture([
+    "./Solastra/texture/2k_venus_surface.jpg",
+    "./Solastra/texture/2k_venus_atmosphere.jpg",
+  ]);
 
   useFrame((state, delta) => {
     mesh.current.rotation.y += delta / 100;
@@ -54,8 +57,8 @@ const Venus: React.FC<VenusProps> = ({
           <meshStandardMaterial
             metalness={0.4}
             roughness={1}
-            map={texture}
-            color={planetActive === 2 ? "rgb(165, 165, 165)" : "gray"}
+            map={surface}
+            color="white"
           />
           <axesHelper args={[6 + 10]} />
         </mesh>
@@ -63,9 +66,9 @@ const Venus: React.FC<VenusProps> = ({
           <sphereGeometry args={[9, 16, 16]} />
           <meshStandardMaterial
             map={atmosphere}
-            color={planetActive === 2 ? "rgb(165, 165, 165)" : "gray"}
+            color="white"
             transparent={true}
-            opacity={0.6}
+            opacity={0.8}
             depthWrite={false}
           />
         </mesh>

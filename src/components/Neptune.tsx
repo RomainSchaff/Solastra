@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import { TextureLoader } from "three";
-import { useRef, useState, useMemo } from "react";
-import { useFrame, useLoader } from "@react-three/fiber";
+import { useRef } from "react";
+import { useFrame } from "@react-three/fiber";
+import { useTexture } from "@react-three/drei";
 
 type NeptuneProps = {
   setNewTarget: (value: [number, number, number]) => void;
@@ -16,7 +16,7 @@ const Neptune: React.FC<NeptuneProps> = ({
 }) => {
   const mesh = useRef<THREE.Group>(null!);
   const ringMesh = useRef<THREE.Group>(null!);
-  const texture = useLoader(TextureLoader, "./texture/2k_neptune.jpg");
+  const neptune = useTexture("./Solastra/texture/2k_neptune.jpg");
 
   useFrame((state, delta) => {
     mesh.current.rotation.y += delta * 1.2;
@@ -40,27 +40,8 @@ const Neptune: React.FC<NeptuneProps> = ({
     }
   }
 
-  // // Géométrie pour la trajectoire orbitale
-  // const orbitGeometry = useMemo(() => {
-  //   const geometry = new THREE.BufferGeometry();
-  //   const vertices = [];
-  //   for (let i = 0; i <= 64; i++) {
-  //     const theta = (i / 64) * Math.PI * 2;
-  //     vertices.push(1200 * Math.cos(theta), 0, 1200 * Math.sin(theta));
-  //   }
-  //   geometry.setAttribute(
-  //     "position",
-  //     new THREE.Float32BufferAttribute(vertices, 3)
-  //   );
-  //   return geometry;
-  // }, []);
-
   return (
     <>
-      {/* <lineLoop>
-        <bufferGeometry attach="geometry" {...orbitGeometry} />
-        <lineBasicMaterial attach="material" color="rgb(50, 50, 50)" />
-      </lineLoop> */}
       <group
         ref={mesh}
         scale={planetActive === 8 ? 1.3 : 1}
@@ -70,44 +51,44 @@ const Neptune: React.FC<NeptuneProps> = ({
       >
         <mesh>
           <sphereGeometry args={[19, 32, 32]} />
-          <meshStandardMaterial
-            map={texture}
-            color={planetActive === 8 ? "rgb(165, 165, 165)" : "gray"}
-          />
+          <meshStandardMaterial map={neptune} color="white" />
           <axesHelper args={[19 + 10]} />
         </mesh>
         <group ref={ringMesh} rotation-x={90 * (Math.PI / 180)}>
           <mesh>
-            <ringGeometry args={[30, 31, 30]} />
+            <ringGeometry args={[27, 27.5, 60]} />
             <meshStandardMaterial
-              metalness={0.2}
-              roughness={0.5}
-              color="rgb(45, 45, 45)"
+              color="rgb(159, 159, 159)"
               side={THREE.DoubleSide}
               transparent
               opacity={0.7}
             />
           </mesh>
           <mesh>
-            <ringGeometry args={[32.5, 33, 30]} />
+            <ringGeometry args={[33, 33.5, 60]} />
             <meshStandardMaterial
-              metalness={0.2}
-              roughness={0.5}
-              color="rgb(45, 45, 45)"
+              color="rgb(200, 200, 200)"
               side={THREE.DoubleSide}
               transparent
-              opacity={0.7}
+              opacity={0.8}
             />
           </mesh>
           <mesh>
-            <ringGeometry args={[34, 35.5, 30]} />
+            <ringGeometry args={[33.6, 37, 60]} />
             <meshStandardMaterial
-              metalness={0.2}
-              roughness={0.5}
-              color="rgb(45, 45, 45)"
+              color="rgb(159, 159, 159)"
               side={THREE.DoubleSide}
               transparent
-              opacity={0.7}
+              opacity={0.6}
+            />
+          </mesh>
+          <mesh>
+            <ringGeometry args={[41, 41.3, 60]} />
+            <meshStandardMaterial
+              color="rgb(159, 159, 159)"
+              side={THREE.DoubleSide}
+              transparent
+              opacity={0.6}
             />
           </mesh>
         </group>

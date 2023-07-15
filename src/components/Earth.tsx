@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import { TextureLoader } from "three";
 import { useRef } from "react";
-import { useFrame, useLoader } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
+import { useTexture } from "@react-three/drei";
 
 type EarthProps = {
   setNewTarget: (value: [number, number, number]) => void;
@@ -17,9 +17,11 @@ const Earth: React.FC<EarthProps> = ({
   const mesh = useRef<THREE.Group>(null!);
   const earthMesh = useRef<THREE.Group>(null!);
   const moonMesh = useRef<THREE.Mesh>(null!);
-  const texture = useLoader(TextureLoader, "./texture/2k_earth_daymap.jpg");
-  const atmosphere = useLoader(TextureLoader, "./texture/2k_earth_clouds.jpg");
-  const moonTexture = useLoader(TextureLoader, "./texture/2k_moon.jpg");
+  const [surface, atmosphere, moon] = useTexture([
+    "./Solastra/texture/2k_earth_surface_daymap.jpg",
+    "./Solastra/texture/2k_earth_atmosphere.jpg",
+    "./Solastra/texture/2k_moon.jpg",
+  ]);
 
   useFrame((state, delta) => {
     earthMesh.current.rotation.y += delta;
@@ -30,9 +32,9 @@ const Earth: React.FC<EarthProps> = ({
     mesh.current.position.set(x, 0, z);
     // Moon rotation
     const moonAngle = time / 1;
-    const moonX = 30 * Math.cos(moonAngle);
-    const moonY = 10 * Math.sin(moonAngle);
-    const moonZ = 30 * Math.sin(moonAngle);
+    const moonX = 25 * Math.cos(-moonAngle);
+    const moonY = 5 * Math.sin(moonAngle);
+    const moonZ = 25 * Math.sin(-moonAngle);
     moonMesh.current.position.set(moonX, moonY, moonZ);
     if (planetActive === 3) {
       setNewTarget([x, 0, z]);
@@ -60,40 +62,26 @@ const Earth: React.FC<EarthProps> = ({
         rotation-x={23 * (Math.PI / 180)}
         onClick={handleClick}
       >
-        <group
-          ref={earthMesh}
-          scale={planetActive === 3 ? 1.3 : 1}
-          receiveShadow
-        >
+        <group ref={earthMesh} scale={planetActive === 3 ? 1.3 : 1}>
           <mesh receiveShadow>
             <sphereGeometry args={[11, 32, 32]} />
-            <meshStandardMaterial
-              metalness={0.2}
-              roughness={0.9}
-              map={texture}
-              color={planetActive === 3 ? "rgb(165, 165, 165)" : "gray"}
-            />
+            <meshStandardMaterial map={surface} color="white" />
             <axesHelper args={[11 + 10]} />
           </mesh>
-          <mesh receiveShadow>
+          <mesh>
             <sphereGeometry args={[12, 32, 32]} />
             <meshStandardMaterial
               map={atmosphere}
-              color={planetActive === 3 ? "rgb(165, 165, 165)" : "gray"}
-              transparent={true}
-              opacity={0.5}
+              color="white"
+              transparent
+              opacity={0.4}
               depthWrite={false}
             />
           </mesh>
         </group>
         <mesh ref={moonMesh} castShadow>
           <sphereGeometry args={[3, 16, 16]} />
-          <meshStandardMaterial
-            metalness={0.2}
-            roughness={0.9}
-            map={moonTexture}
-            color={planetActive === 3 ? "rgb(165, 165, 165)" : "gray"}
-          />
+          <meshStandardMaterial map={moon} color="white" />
         </mesh>
       </group>
     </>

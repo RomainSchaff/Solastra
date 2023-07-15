@@ -1,10 +1,11 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
-// import { folder, useControls } from "leva";
-import { extend, useFrame, useLoader, useThree } from "@react-three/fiber";
+import { extend, useFrame, useThree } from "@react-three/fiber";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
-import { TextureLoader, Vector2 } from "three";
+import { Vector2 } from "three";
+import { useGLTF, useTexture } from "@react-three/drei";
+// import { folder, useControls } from "leva";
 
 // Ensure EffectComposer, RenderPass, UnrealBloomPass are available within r3f
 extend({ EffectComposer, RenderPass, UnrealBloomPass });
@@ -95,7 +96,8 @@ const Sun: React.FC = () => {
   const meshRef = useRef<THREE.Mesh>(null);
   const lightRef = useRef<THREE.PointLight>(null);
   const [hovered, setHover] = useState(false);
-  const texture = useLoader(TextureLoader, "./texture/2k_sun.jpg");
+  const sun = useTexture("./Solastra/texture/2k_sun.jpg");
+  const model = useGLTF("./Solastra/sun.glb");
 
   useFrame((state, delta) => {
     if (meshRef.current) {
@@ -111,9 +113,10 @@ const Sun: React.FC = () => {
         castShadow
         position={[0, 0, 0]}
         color="white"
-        intensity={2.8}
+        intensity={1}
       />
-      <mesh
+      <primitive ref={meshRef} object={model.scene} scale={0.05} />
+      {/* <mesh
         ref={meshRef}
         position={[0, 0, 0]}
         onPointerOver={() => setHover(true)}
@@ -122,10 +125,10 @@ const Sun: React.FC = () => {
         <sphereGeometry args={[30, 32, 16]} />
         <meshBasicMaterial
           color={hovered ? "white" : "yellow"}
-          map={texture}
+          map={sun}
           wireframe
         />
-      </mesh>
+      </mesh> */}
     </>
   );
 };
